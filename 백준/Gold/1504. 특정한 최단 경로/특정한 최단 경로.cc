@@ -21,23 +21,28 @@ int main() {
 
 	cin >> V >> E;
 	int s, d, w;
-	
+
 	for (int i = 0; i < E; i++) {
 		cin >> s >> d >> w;
+		// undirected graph
 		vertex[s].push_back({ w,d });
 		vertex[d].push_back({ w,s });
 	}
 	cin >> v1 >> v2;
+	// Initiate distances to INF
 	for (int i = 1; i <= V; i++) {
 		dist_v1[i] = INF;
 		dist_v2[i] = INF;
 	}
+	// v1에서의 dijkstra
 	dist_v1[v1] = 0;
 	pq.push({ 0, v1 });
 	while (!pq.empty()) {
 		w = pq.top().first;
 		s = pq.top().second;
 		pq.pop();
+
+		if (dist_v1[s] < w) continue;
 
 		for (int i = 0; i < vertex[s].size(); i++) {
 			d = vertex[s][i].second;
@@ -47,12 +52,15 @@ int main() {
 			}
 		}
 	}
+	// v2에서의 dijkstra
 	dist_v2[v2] = 0;
 	pq.push({ 0, v2 });
 	while (!pq.empty()) {
 		w = pq.top().first;
 		s = pq.top().second;
 		pq.pop();
+
+		if (dist_v2[s] < w) continue;
 
 		for (int i = 0; i < vertex[s].size(); i++) {
 			d = vertex[s][i].second;
@@ -62,7 +70,8 @@ int main() {
 			}
 		}
 	}
-	result[0] = result[1] = INF; // result[0]: 1->v1->v2->N, result[1]: 1->v2->v1->N
+	result[0] = result[1] = INF; 
+	// result[0]: 1->v1->v2->N, result[1]: 1->v2->v1->N
 	// If the path(v1 -> v2 || v2 -> v1) isn't exist, then print -1.
 	if (dist_v1[v2] == INF) {
 		cout << "-1\n";
