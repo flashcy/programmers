@@ -11,7 +11,7 @@ using namespace std;
 int T, n, m, t, s, g, h;
 vector<pair<int, int>> edges[2001];
 int arrival[101];
-int dist[3][2001];
+int dist[3][2001]; // [0]: g -> others without h, [1]: h -> others without g, [2]: s -> others
 priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int >>> pq;
 
 void dijkstra(int st, int gh) {
@@ -35,12 +35,19 @@ void dijkstra(int st, int gh) {
 }
 
 void Solve() {
+    // g -> h 미리 최솟값으로 만들어둠.
     dist[0][h] = 0;
+
+    // h -> g 미리 최솟값으로 만들어둠.
     dist[1][g] = 0;
+
+    // 위의 작업을 하는 이유는 최단경로 구할 때 g - h 경로로 최단경로 찾는 걸 방지하기 위함.
+    // 추후에 따로 더해줄거라.
     dijkstra(g, 0);
     dijkstra(h, 1);
     dijkstra(s, 2);
 
+    // g - h 거리 찾기
     int gh = 0;
     for (auto i : edges[g]) {
         if (i.first == h) {
@@ -50,15 +57,20 @@ void Solve() {
     }
 
     for (int i = 0; i < t; i++) {
+        // s -> 도착지 후보까지의 경로가
+        // s -> g -> h -> 도착지 후보 or s-> h -> g -> 도착지 후보 중에 있다면,
+        // 해당 도착지 후보는 도착지 가능.
         if (dist[0][arrival[i]] + dist[1][s] + gh == dist[2][arrival[i]] ||
             dist[1][arrival[i]] + dist[0][s] + gh == dist[2][arrival[i]])
             continue;
+        // 그러나 g -> h 혹은 h -> g를 거치지 않는 최단거리라면, 도착지 불가능.
         arrival[i] = 0;
     }
 
+    // 도착지를 오름차순 정렬 후 출력.
     sort(arrival, arrival + t);
     for (int i = 0; i < t; i++) {
-        if (arrival[i])
+        if (arrival[i]) // 안 되는 도착지는 0으로 바꿨기에 걸러짐.
             cout << arrival[i] << ' ';
     }
     cout << '\n';
@@ -89,7 +101,7 @@ int main() {
     cout.tie(NULL);
 
     cin >> T;
-    while(T--) {
+    while (T--) {
         Input();
         Solve();
     }
