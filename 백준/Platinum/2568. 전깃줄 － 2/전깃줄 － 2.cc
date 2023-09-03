@@ -21,9 +21,8 @@ int main() {
 	for (int i = 0; i < N; i++) {
 		int a, b;
 		cin >> a >> b;
-		line[i] = { a,b };
+		line[i] = { a, b };
 	}
-	memset(repIdx, -2, sizeof(repIdx));
 	sort(line, line + N);
 
 	A.push_back(line[0]);
@@ -33,33 +32,28 @@ int main() {
 			A.push_back(line[i]);
 			repIdx[i] = A.size() - 1;
 		}
-		else if (A.back().second > line[i].second) {
-			int l = 0, r = A.size() - 1;
-			while (l < r) {
-				int mid = (l + r) / 2;
-				if (A[mid].second >= line[i].second) {
-					r = mid;
-				}
-				else l = mid + 1;
+		else {
+			int left = 0, right = A.size() - 1;
+			while (left < right) {
+				int mid = (left + right) / 2;
+				if (A[mid].second >= line[i].second) right = mid;
+				else left = mid + 1;
 			}
-			A[r] = line[i];
-			repIdx[i] = r;
+			A[right] = line[i];
+			repIdx[i] = right;
 		}
 	}
 
 	int idx = A.size() - 1;
 	for (int i = N - 1; i >= 0; i--) {
-		if (repIdx[i] == idx) {
-			idx--;
-		}
-		else {
-			ans.push_back(line[i].first);
-		}
+		if (idx == repIdx[i]) idx--;
+		else ans.push_back(line[i].first);
 	}
-	cout << ans.size() << "\n";
+
 	sort(ans.begin(), ans.end());
+	cout << ans.size() << '\n';
 	for (auto a : ans) {
-		cout << a << "\n";
+		cout << a << '\n';
 	}
 
 	return 0;
