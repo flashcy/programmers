@@ -63,7 +63,6 @@ int main() {
 		bool vertex = false, poss = false;
 		pair<int, int> ip = {0, 0}, vp = {0, 0};
 		for (int k = 0; k < 4; k++) {
-			//if (vp.first == px[k] && vp.second == py[k]) continue;
 			if (isIntersect(line[i], { {px[k], py[k]}, {px[(k + 1) % 4], py[(k + 1) % 4]} })) {
 				ip = getIntersection(line[i], { {px[k], py[k]}, {px[(k + 1) % 4], py[(k + 1) % 4]} });
 				if (abs(ip.first) == 10 && abs(ip.second) == 10) {
@@ -88,8 +87,7 @@ int main() {
 		for (int j = 0; j < i; j++) {
 			if (isIntersect(line[i], line[j])) {
 				ip = getIntersection(line[i], line[j]);
-				if (ip.first >= -10 && ip.first <= 10 && ip.second >= -10 && ip.second <= 10) {
-					if (abs(ip.first) == 10 || abs(ip.second) == 10) continue;
+				if (ip.first > -10 && ip.first < 10 && ip.second > -10 && ip.second < 10) {
 					cnt++;
 				}
 			}
